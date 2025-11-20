@@ -28,6 +28,7 @@ class SettingsScreenActivity : BaseActivity() {
 
         darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
             prefs.edit().putBoolean(DARK_MODE, isChecked).apply()
+            recreate()
         }
 
         val enableNotif = SettingsItemHelper(findViewById(R.id.enableNotif))

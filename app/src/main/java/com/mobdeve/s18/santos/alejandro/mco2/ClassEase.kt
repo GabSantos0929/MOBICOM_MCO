@@ -14,7 +14,7 @@ class ClassEase : Application() {
         // Create notification channel for class alerts
         createNotificationChannels()
 
-        val prefs = getSharedPreferences("settings", MODE_PRIVATE)
+        val prefs = getSharedPreferences("settings_prefs", MODE_PRIVATE)
         val isNotifEnabled = prefs.getBoolean("enable_notif", true)
 
         if (isNotifEnabled) {
@@ -56,7 +56,7 @@ class ClassEase : Application() {
         val alarmManager = getSystemService(Context.ALARM_SERVICE) as android.app.AlarmManager
 
         classesToday.forEach { classItem ->
-            val prefs = applicationContext.getSharedPreferences("settings", MODE_PRIVATE)
+            val prefs = applicationContext.getSharedPreferences("settings_prefs", MODE_PRIVATE)
             val selected = prefs.getString("notif_timing", "Smart (Floor-based)")
             val alertOffset = classDb.computeAlertOffset(selected!!, classItem.room)
             val alertTime = calculateAlertTime(classItem, alertOffset) ?: return@forEach

@@ -55,7 +55,7 @@ class SettingsItemHelper(val root: LinearLayout) {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-        val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("settings_prefs", Context.MODE_PRIVATE)
         val saved = prefs.getString(preferenceKey, defaultValue)
         spinner.setSelection(options.indexOf(saved))
 

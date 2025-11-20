@@ -94,7 +94,7 @@ class NotifDbHelper(context: Context) {
         val floorNumber = extractFloor(item.room)
         val floorText = floorText(floorNumber)
 
-        val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+        val prefs = context.getSharedPreferences("settings_prefs", Context.MODE_PRIVATE)
         val selected = prefs.getString("notif_timing", "Smart (Floor-based)")
         val alertOffset = classDb.computeAlertOffset(selected!!, item.room)
 
