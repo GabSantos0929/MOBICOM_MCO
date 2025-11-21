@@ -2,6 +2,7 @@ package com.mobdeve.s18.santos.alejandro.mco2
 
 import android.os.Bundle
 import android.widget.Switch
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 
 class SettingsScreenActivity : BaseActivity() {
@@ -33,14 +34,7 @@ class SettingsScreenActivity : BaseActivity() {
         ) { selectedTheme ->
             // Save the new preference
             prefs.edit().putString(DARK_MODE, selectedTheme).apply()
-
-            // Apply global theme next time activity loads
-            val mode = when (selectedTheme) {
-                "Light" -> AppCompatDelegate.MODE_NIGHT_NO
-                "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            }
-            AppCompatDelegate.setDefaultNightMode(mode)
+            Toast.makeText(this, "Theme changed to $selectedTheme. Changes will take effect after app restart.", Toast.LENGTH_LONG).show()
         }
 
         val enableNotif = SettingsItemHelper(findViewById(R.id.enableNotif))

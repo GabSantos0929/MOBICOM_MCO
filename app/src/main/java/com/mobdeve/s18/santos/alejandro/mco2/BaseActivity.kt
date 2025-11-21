@@ -8,20 +8,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 
 open class BaseActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        applySavedTheme()
         super.onCreate(savedInstanceState)
-    }
-
-    private fun applySavedTheme() {
-        val prefs = getSharedPreferences("settings_prefs", MODE_PRIVATE)
-        val themeValue = prefs.getString("dark_mode", "System Default")
-
-        val mode = when (themeValue) {
-            "Light" -> AppCompatDelegate.MODE_NIGHT_NO
-            "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
-            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-        }
-        AppCompatDelegate.setDefaultNightMode(mode)
     }
 
     protected fun setupBottomNav(selectedItemId: Int) {

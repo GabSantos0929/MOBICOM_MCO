@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 
 class ClassEase : Application() {
     override fun onCreate() {
@@ -16,6 +17,14 @@ class ClassEase : Application() {
 
         val prefs = getSharedPreferences("settings_prefs", MODE_PRIVATE)
         val isNotifEnabled = prefs.getBoolean("enable_notif", true)
+        val themeValue = prefs.getString("dark_mode", "System Default")
+
+        val mode = when (themeValue) {
+            "Light" -> AppCompatDelegate.MODE_NIGHT_NO
+            "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        AppCompatDelegate.setDefaultNightMode(mode)
 
         if (isNotifEnabled) {
             scheduleClassAlerts()
