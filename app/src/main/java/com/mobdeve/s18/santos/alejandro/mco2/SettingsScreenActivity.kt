@@ -2,12 +2,14 @@ package com.mobdeve.s18.santos.alejandro.mco2
 
 import android.os.Bundle
 import android.widget.Switch
+import androidx.appcompat.app.AppCompatDelegate
 
 class SettingsScreenActivity : BaseActivity() {
     private val PREFS_NAME = "settings_prefs"
     private val DARK_MODE = "dark_mode"
     private val ENABLE_NOTIF = "enable_notif"
     private val PLAY_SOUND = "play_sound"
+    private val NOTIF_TIMING = "notif_timing"
     private val SHOW_PINS = "show_pins"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,14 +23,24 @@ class SettingsScreenActivity : BaseActivity() {
         val prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
 
         val darkMode = SettingsItemHelper(findViewById(R.id.darkMode))
-        darkMode.populate(R.drawable.sun, "Dark Mode", "Switch between light and dark theme", hasSwitch = true)
+        darkMode.populate(R.drawable.sun, "Theme", "Choose between light, dark, or system default", hasSpinner = true)
 
-        val darkModeSwitch = darkMode.root.findViewById<Switch>(R.id.itemSwitch)
-        darkModeSwitch.isChecked = prefs.getBoolean(DARK_MODE, false)
+        darkMode.setupSpinner(
+            this,
+            options = listOf("System Default", "Light", "Dark"),
+            preferenceKey = DARK_MODE,
+            defaultValue = "System Default"
+        ) { selectedTheme ->
+            // Save the new preference
+            prefs.edit().putString(DARK_MODE, selectedTheme).apply()
 
-        darkModeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            prefs.edit().putBoolean(DARK_MODE, isChecked).apply()
-            recreate()
+            // Apply global theme next time activity loads
+            val mode = when (selectedTheme) {
+                "Light" -> AppCompatDelegate.MODE_NIGHT_NO
+                "Dark" -> AppCompatDelegate.MODE_NIGHT_YES
+                else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+            AppCompatDelegate.setDefaultNightMode(mode)
         }
 
         val enableNotif = SettingsItemHelper(findViewById(R.id.enableNotif))
@@ -65,11 +77,11 @@ class SettingsScreenActivity : BaseActivity() {
         notifTiming.setupSpinner(
             this,
             options = listOf("Smart (Floor-based)", "10 minutes before", "15 minutes before", "20 minutes before", "30 minutes before", "1 hour before"),
-            preferenceKey = "notif_timing",
+            preferenceKey = NOTIF_TIMING,
             defaultValue = "Smart (Floor-based)"
         ) { selectedValue ->
             // Save the new preference
-            prefs.edit().putString("notif_timing", selectedValue).apply()
+            prefs.edit().putString(NOTIF_TIMING, selectedValue).apply()
 
             // Cancel old alarms and schedule new ones with the updated timing
             val app = application as ClassEase
