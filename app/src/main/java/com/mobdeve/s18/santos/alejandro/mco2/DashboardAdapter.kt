@@ -24,6 +24,7 @@ class DashboardAdapter(
             tvTime.text = "${item.start24.replace(':','•').replace('•',':')} – ${item.end24}"
             tvLocation.text = "${item.building} • ${item.room}"
 
+            card.setOnClickListener { onClick(item) }
         }
     }
 

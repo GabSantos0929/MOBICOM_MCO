@@ -85,8 +85,9 @@ class ClassDbHelper(context: Context) {
         return todayClasses
     }
 
-    fun insertClass(item: ClassItem) {
+    fun insertClass(item: ClassItem): Long{
         val db = dbHelper.writableDatabase
+
 
         val values = ContentValues().apply {
             put(DbReferences.CLASS_TITLE, item.title)
@@ -97,9 +98,73 @@ class ClassDbHelper(context: Context) {
             put(DbReferences.CLASS_DAY_INDEX, item.dayIndex)
         }
 
-        db.insert(DbReferences.CLASS_TABLE, null, values)
+        val newId = db.insert(DbReferences.CLASS_TABLE, null, values)
         db.close()
+        return newId
     }
+
+    fun deleteClass(id: Long): Int {
+        val db = dbHelper.writableDatabase
+        val rows = db.delete(
+            DbReferences.CLASS_TABLE,
+            "${DbReferences.CLASS_ID}=?",
+            arrayOf(id.toString())
+        )
+        db.close()
+        return rows
+    }
+
+
+    fun getAllClasses(): List<ClassItem> {
+        val out = mutableListOf<ClassItem>()
+        val db = dbHelper.readableDatabase
+        val cursor = db.query(
+            DbReferences.CLASS_TABLE,
+            null,
+            null, null, null, null,
+            "${DbReferences.CLASS_DAY_INDEX} ASC, ${DbReferences.CLASS_START_TIME} ASC"
+        )
+
+        while (cursor.moveToNext()) {
+            out += ClassItem(
+                id        = cursor.getLong(cursor.getColumnIndexOrThrow(DbReferences.CLASS_ID)),
+                title     = cursor.getString(cursor.getColumnIndexOrThrow(DbReferences.CLASS_TITLE)),
+                building  = cursor.getString(cursor.getColumnIndexOrThrow(DbReferences.CLASS_BUILDING)),
+                room      = cursor.getString(cursor.getColumnIndexOrThrow(DbReferences.CLASS_ROOM)),
+                start24   = cursor.getString(cursor.getColumnIndexOrThrow(DbReferences.CLASS_START_TIME)),
+                end24     = cursor.getString(cursor.getColumnIndexOrThrow(DbReferences.CLASS_END_TIME)),
+                dayIndex  = cursor.getInt(cursor.getColumnIndexOrThrow(DbReferences.CLASS_DAY_INDEX))
+            )
+        }
+        cursor.close()
+        db.close()
+        return out
+    }
+
+
+
+    fun updateClass(item: ClassItem): Int {
+        val db = dbHelper.writableDatabase
+        val floorNumber = extractFloor(item.room)
+        val alertOffset = if (floorNumber >= 7) 30 else 15
+
+        val values = ContentValues().apply {
+            put(DbReferences.CLASS_TITLE, item.title)
+            put(DbReferences.CLASS_BUILDING, item.building)
+            put(DbReferences.CLASS_ROOM, item.room)
+            put(DbReferences.CLASS_START_TIME, item.start24)
+            put(DbReferences.CLASS_END_TIME, item.end24)
+            put(DbReferences.CLASS_DAY_INDEX, item.dayIndex)
+        }
+        val rows = db.update(
+            DbReferences.CLASS_TABLE, values,
+            "${DbReferences.CLASS_ID}=?", arrayOf(item.id.toString())
+        )
+        db.close()
+        return rows
+    }
+
+
 
     object DbReferences {
         const val CLASS_TABLE = "classes"
@@ -111,6 +176,7 @@ class ClassDbHelper(context: Context) {
         const val CLASS_END_TIME = "end_time"
         const val CLASS_DAY_INDEX = "day_index"
 
+
         const val CREATE_CLASS_TABLE =
             "CREATE TABLE IF NOT EXISTS $CLASS_TABLE (" +
                     "$CLASS_ID INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -119,7 +185,7 @@ class ClassDbHelper(context: Context) {
                     "$CLASS_ROOM TEXT NOT NULL, " +
                     "$CLASS_START_TIME TEXT NOT NULL, " +
                     "$CLASS_END_TIME TEXT NOT NULL, " +
-                    "$CLASS_DAY_INDEX INTEGER DEFAULT -1)"
+                    "$CLASS_DAY_INDEX INTEGER DEFAULT -1) "
 
         const val INSERT_CLASS_TABLE =
             "INSERT INTO $CLASS_TABLE (" +

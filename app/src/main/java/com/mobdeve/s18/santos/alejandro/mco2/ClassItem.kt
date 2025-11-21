@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ClassItem (
-    val id: Long,
+    val id: Long = 0L,
     val title: String,
     val building: String,
     val room: String,

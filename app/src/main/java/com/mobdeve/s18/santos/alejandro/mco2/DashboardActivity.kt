@@ -1,9 +1,11 @@
 package com.mobdeve.s18.santos.alejandro.mco2
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +26,12 @@ class DashboardActivity : BaseActivity() {
     private lateinit var btnOpenRoute: MaterialButton
     private lateinit var classDb: ClassDbHelper
 
+    private val detailsLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+            if (res.resultCode == Activity.RESULT_OK) renderData()
+        }
+
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +47,11 @@ class DashboardActivity : BaseActivity() {
         btnOpenRoute = findViewById(R.id.btnOpenRoute)
 
         // list
-        adapter = DashboardAdapter { item -> openDetailsOrMap(item) }
+        adapter = DashboardAdapter { item ->
+            val i = Intent(this, ClassDetailsActivity::class.java)
+                .putExtra(EXTRA_RESULT_CLASS, item)
+            detailsLauncher.launch(i)
+        }
         rv.layoutManager = LinearLayoutManager(this)
         rv.adapter = adapter
 
