@@ -3,7 +3,6 @@ package com.mobdeve.s18.santos.alejandro.mco2
 import android.os.Bundle
 import android.widget.Switch
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
 
 class SettingsScreenActivity : BaseActivity() {
     private val PREFS_NAME = "settings_prefs"
@@ -106,3 +105,4 @@ class SettingsScreenActivity : BaseActivity() {
         about.startActivityOnClick(this, about, AboutActivity::class.java)
     }
 }
+
