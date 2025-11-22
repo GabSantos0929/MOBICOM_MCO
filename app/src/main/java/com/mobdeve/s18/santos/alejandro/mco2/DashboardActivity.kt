@@ -23,7 +23,6 @@ class DashboardActivity : BaseActivity() {
     private lateinit var adapter: DashboardAdapter
     private lateinit var tvNextMinutes: TextView
     private lateinit var tvNextMeta: TextView
-    private lateinit var btnOpenRoute: MaterialButton
     private lateinit var classDb: ClassDbHelper
 
     private val detailsLauncher =
@@ -44,7 +43,6 @@ class DashboardActivity : BaseActivity() {
         rv = findViewById(R.id.rvClasses)
         tvNextMinutes = findViewById(R.id.tvNextMinutes)
         tvNextMeta = findViewById(R.id.tvNextMeta)
-        btnOpenRoute = findViewById(R.id.btnOpenRoute)
 
         // list
         adapter = DashboardAdapter { item ->
@@ -72,12 +70,9 @@ class DashboardActivity : BaseActivity() {
             val mins = Duration.between(now, LocalTime.parse(next.start24)).toMinutes()
             tvNextMinutes.text = "$mins mins"
             tvNextMeta.text = "${next.title}  •  ${next.building}  •  ${next.room}"
-            btnOpenRoute.isVisible = true
-            btnOpenRoute.setOnClickListener { openMaps(next) }
         } else {
             tvNextMinutes.text = "—"
             tvNextMeta.text = "No upcoming classes"
-            btnOpenRoute.isVisible = false
         }
     }
 
