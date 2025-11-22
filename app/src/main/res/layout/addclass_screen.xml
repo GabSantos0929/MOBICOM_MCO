@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="16dp"
-            android:text="Schedule"
+            android:text="Back"
             android:textColor="?attr/colorOnSurface"
             android:textSize="16sp" />
     </LinearLayout>
