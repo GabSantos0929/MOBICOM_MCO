@@ -28,21 +28,6 @@
         app:layout_constraintTop_toTopOf="@id/headerLogo"
         app:layout_constraintBottom_toBottomOf="@id/headerLogo" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/headerBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="24dp"
-        android:layout_margin="16dp"
-        android:background="@drawable/header_btn_bg"
-        android:text="Weekly List"
-        android:textAllCaps="false"
-        android:textColor="?attr/colorOnSurface"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/headerLogo"
-        app:layout_constraintBottom_toBottomOf="@id/headerLogo" />
-
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
