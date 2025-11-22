@@ -55,6 +55,10 @@ class ClassDetailsActivity : BaseActivity() {
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Delete") { _, _ ->
                     db.deleteClass(item.id)
+
+                    val app = application as ClassEase
+                    app.cancelAllClassAlerts()
+                    app.scheduleClassAlerts()
                     setResult(Activity.RESULT_OK, Intent().putExtra("deletedId", item.id))
                     finish()
                 }.show()

@@ -76,6 +76,7 @@ class AddClassActivity : BaseActivity() {
             val end   = etEnd.text.toString().trim()
             val building = etBuilding.text.toString().trim()
             val room     = etRoom.text.toString().trim()
+            val app = application as ClassEase
 
             if (title.isEmpty() || start.isEmpty() || end.isEmpty()) {
                 Toast.makeText(this, "Please fill Subject, Start, and End.", Toast.LENGTH_SHORT).show()
@@ -93,6 +94,9 @@ class AddClassActivity : BaseActivity() {
                 )
                 val id = db.insertClass(newItem)
                 if (id <= 0) { Toast.makeText(this,"Save failed.",Toast.LENGTH_SHORT).show(); return@setOnClickListener }
+
+                app.cancelAllClassAlerts()
+                app.scheduleClassAlerts()
                 setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_RESULT_CLASS, newItem.copy(id = id)))
             } else {
                 val updated = editing!!.copy(
@@ -104,6 +108,8 @@ class AddClassActivity : BaseActivity() {
                     dayIndex = selectedDayIndex
                 )
                 db.updateClass(updated)
+                app.cancelAllClassAlerts()
+                app.scheduleClassAlerts()
                 setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_RESULT_CLASS, updated))
             }
             finish()
