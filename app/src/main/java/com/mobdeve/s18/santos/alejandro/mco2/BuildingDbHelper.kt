@@ -49,6 +49,17 @@ class BuildingDbHelper(context: Context) {
         db.close()
     }
 
+    fun deleteBuilding(name: String?): Int {
+        val db = dbHelper.writableDatabase
+        val rows = db.delete(
+            DbReferences.BUILDING_TABLE,
+            "${DbReferences.BUILDING_NAME}=?",
+            arrayOf(name)
+        )
+        db.close()
+        return rows
+    }
+
     object DbReferences {
         const val BUILDING_TABLE = "buildings"
         const val BUILDING_ID = "id"

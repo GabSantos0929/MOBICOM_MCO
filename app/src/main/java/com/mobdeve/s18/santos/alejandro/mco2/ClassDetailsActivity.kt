@@ -8,8 +8,6 @@ import android.widget.TextView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 class ClassDetailsActivity : BaseActivity() {
-
-    private val dayLabels = listOf("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday")
     private lateinit var db: ClassDbHelper
     private lateinit var item: ClassItem
 
@@ -47,6 +45,7 @@ class ClassDetailsActivity : BaseActivity() {
             val i = Intent(this, AddClassActivity::class.java).putExtra(EXTRA_EDIT_CLASS, item)
             editLauncher.launch(i)
         }
+        val app = application as ClassEase
 
         findViewById<MaterialButton>(R.id.btnDelete).setOnClickListener {
             MaterialAlertDialogBuilder(this)
@@ -54,10 +53,8 @@ class ClassDetailsActivity : BaseActivity() {
                 .setMessage("This cannot be undone.")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Delete") { _, _ ->
-                    db.deleteClass(item.id)
-
-                    val app = application as ClassEase
                     app.cancelAllClassAlerts()
+                    db.deleteClass(item.id)
                     app.scheduleClassAlerts()
                     setResult(Activity.RESULT_OK, Intent().putExtra("deletedId", item.id))
                     finish()

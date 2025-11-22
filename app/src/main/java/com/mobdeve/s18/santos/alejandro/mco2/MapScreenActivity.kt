@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import android.widget.ImageButton
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.color.MaterialColors
 
@@ -92,12 +94,12 @@ class MapScreenActivity : BaseActivity(), OnMapReadyCallback {
         // Optional: handle marker clicks
         mMap.setOnMarkerClickListener { marker ->
             val buildingName = marker.title
-            showClassesForBuilding(buildingName)
+            showClassesForBuilding(buildingName, marker)
             true
         }
     }
 
-    private fun showClassesForBuilding(buildingName: String?) {
+    private fun showClassesForBuilding(buildingName: String?, marker: Marker) {
         val classes = classDb.getClassesForToday()
             .filter { it.building == buildingName }
 
@@ -105,6 +107,7 @@ class MapScreenActivity : BaseActivity(), OnMapReadyCallback {
         val tvBuildingName = bottomSheetView.findViewById<TextView>(R.id.buildingName)
         val rvClasses = bottomSheetView.findViewById<RecyclerView>(R.id.classes)
         val tvNoClasses = bottomSheetView.findViewById<TextView>(R.id.noClasses)
+        val deleteBtn = bottomSheetView.findViewById<ImageButton>(R.id.deletePinBtn)
 
         tvBuildingName.text = buildingName
 
@@ -121,6 +124,14 @@ class MapScreenActivity : BaseActivity(), OnMapReadyCallback {
         val bottomSheetDialog = com.google.android.material.bottomsheet.BottomSheetDialog(this)
         bottomSheetDialog.setContentView(bottomSheetView)
         bottomSheetDialog.show()
+
+        deleteBtn.setOnClickListener {
+            // Delete from DB and remove marker
+            buildingDb.deleteBuilding(buildingName)
+            marker.remove()
+            bottomSheetDialog.dismiss()
+            Toast.makeText(this, "Building deleted", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun showAddBuildingDialog(latLng: LatLng) {
