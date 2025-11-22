@@ -1,4 +1,3 @@
-
 package com.mobdeve.s18.santos.alejandro.mco2
 
 import android.app.Activity
@@ -10,7 +9,7 @@ import android.widget.Toast
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import android.content.Intent
-
+import android.widget.ImageButton
 
 
 class AddClassActivity : BaseActivity() {
@@ -31,7 +30,11 @@ class AddClassActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.addclass_screen)
-        setupBottomNav(R.id.navSchedule)
+
+        val backButton = findViewById<ImageButton>(R.id.addClassGoBackBtn)
+        backButton.setOnClickListener {
+            finish()
+        }
 
         db = ClassDbHelper(this)
 

@@ -3,6 +3,7 @@ package com.mobdeve.s18.santos.alejandro.mco2
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.widget.ImageButton
 import android.widget.TextView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -27,7 +28,11 @@ class ClassDetailsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.class_details)
-        setupBottomNav(R.id.navSchedule)
+
+        val backButton = findViewById<ImageButton>(R.id.schedGoBackBtn)
+        backButton.setOnClickListener {
+            finish()
+        }
 
         db = ClassDbHelper(this)
 
