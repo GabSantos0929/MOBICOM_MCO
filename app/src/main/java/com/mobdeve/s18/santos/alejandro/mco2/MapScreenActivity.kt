@@ -15,6 +15,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -91,15 +92,19 @@ class MapScreenActivity : BaseActivity(), OnMapReadyCallback {
             )
         }
 
-        // Optional: handle marker clicks
+        // When marker is clicked, change color to yellow & focus on marker
         mMap.setOnMarkerClickListener { marker ->
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+            mMap.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(marker.position, 18f)
+            )
             val buildingName = marker.title
-            showClassesForBuilding(buildingName, marker)
+            showClassesForBuilding(buildingName, marker, campusCenter)
             true
         }
     }
 
-    private fun showClassesForBuilding(buildingName: String?, marker: Marker) {
+    private fun showClassesForBuilding(buildingName: String?, marker: Marker, campusCenter: LatLng) {
         val classes = classDb.getClassesForToday()
             .filter { it.building == buildingName }
 
@@ -131,6 +136,14 @@ class MapScreenActivity : BaseActivity(), OnMapReadyCallback {
             marker.remove()
             bottomSheetDialog.dismiss()
             Toast.makeText(this, "Building deleted", Toast.LENGTH_SHORT).show()
+        }
+
+        // When bottom sheet is dismissed, revert marker back to red
+        bottomSheetDialog.setOnDismissListener {
+            marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            mMap.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(campusCenter, 17f)
+            )
         }
     }
 
